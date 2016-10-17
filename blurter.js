@@ -22,15 +22,15 @@ mongoose.connect(mongodburi);
 const Blurt = require('./Models/blurt');
 
 router.route('/blurts')
-    // Get all blurts.
+    // Get all Blurts.
     .get(function(req, res) {
-        Blurt.find(function(err, blurts) {
+        Blurt.find().sort({date: 'desc'}).exec(function(err, blurts) {
             if (err)
                 res.send(err);
             res.json(blurts);
         });
     })
-    // Create a new blurt.
+    // Create a new Blurt.
     .post(function(req, res) {
         const blurt = new Blurt();
         blurt.name = req.body.name;
@@ -41,6 +41,36 @@ router.route('/blurts')
             if (err)
                 res.send(err);
             res.json(blurt);
+        });
+    });
+
+
+const Comment = require('./Models/comment');
+
+router.route('/comments')
+    // Create a comment.
+    .post(function(req, res) {
+        const comment = new Comment();
+        comment.target = req.body.target;
+        comment.date = new Date();
+        comment.content = req.body.content;
+        comment.save(function(err) {
+            if (err)
+                res.send(err);
+            res.json(comment);
+        });
+    });
+
+router.route('/blurts/:id/comments')
+    // Get comments of a specific Blurt.
+    .get(function(req, res) {
+        Comment
+        .find({target: req.params.id})
+        .sort({date: 'desc'})
+        .exec(function(err, comments) {
+            if (err)
+                res.send(err);
+            res.json(comments);
         });
     });
 
