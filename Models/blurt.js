@@ -14,8 +14,7 @@ const Schema = mongoose.Schema;
 const BlurtSchema = new Schema({
     name: String,
     date: Date,
-    content: String,
-    votes: Number
+    content: String
 });
 
 module.exports = mongoose.model('Blurt', BlurtSchema);
