@@ -47,71 +47,28 @@ router.post('/blurts', function(req, res) {
         if (err)
             res.send(err);
         
-        // Let's send a notification
-        const message = {
-            to: '/topics/general',
-            priority: 'high',
-            notification: {
-                body: 'A new Blurt has just been posted!',
-                sound: 'default'
-            }
-        };
+        if (req.body.content.includes("@notify")) {
+            // Let's send a notification
+            const message = {
+                to: '/topics/general',
+                priority: 'high',
+                notification: {
+                    body: 'A new Blurt has just been posted!',
+                    sound: 'default'
+                }
+            };
 
-        fcm.send(message, function(err, response) {
-            if (err)
-                console.log("Failed to send notification!", err);
-            else
-                console.log("Sent notification: ", response);
-        });
-
+            fcm.send(message, function(err, response) {
+                if (err)
+                    console.log("Failed to send notification!", err);
+                else
+                    console.log("Sent notification: ", response);
+            });
+        }
+        
         res.json(blurt);
     });
 });
-
-// Define routes.
-// router.route('/blurts')
-//     // Get all Blurts.
-//     .get(function(req, res) {
-//         Blurt
-//         .find()
-//         .sort({date: 'desc'})
-//         .exec(function(err, blurts) {
-//             if (err)
-//                 res.send(err);
-//             res.json(blurts);
-//         });
-//     })
-//     // Create a new Blurt.
-//     .post(function(req, res) {
-//         const blurt = new Blurt();
-//         blurt.name = req.body.name;
-//         blurt.date = new Date();
-//         blurt.content = req.body.content;
-//         blurt.votes = 0;
-//         blurt.save(function(err) {
-//             if (err)
-//                 res.send(err);
-            
-//             // Let's send a notification
-//             const message = {
-//                 to: '/topics/general',
-//                 priority: 'high',
-//                 notification: {
-//                     body: 'A new Blurt has just been posted!',
-//                     sound: 'default'
-//                 }
-//             };
-
-//             fcm.send(message, function(err, response) {
-//                 if (err)
-//                     console.log("Failed to send notification!", err);
-//                 else
-//                     console.log("Sent notification: ", response);
-//             });
-
-//             res.json(blurt);
-//         });
-//     });
 
 router.post('/comments', function(req, res) {
     const comment = new Comment();
